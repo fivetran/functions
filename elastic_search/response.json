@@ -1,0 +1,101 @@
+{
+  "state": {
+    "search": "2018-06-01T16:49:42.829Z"
+  },
+  "insert": {
+    "search": [
+      {
+        "_index": "products",
+        "_type": "product",
+        "_id": "1005",
+        "_score": 0.64072424,
+        "_sourcetitle": "Puma Bag (Yellow)",
+        "_sourceprice": 34,
+        "_sourcecategories": "Bags",
+        "_sourcebrand": "Puma",
+        "sync_time": "2018-06-01T16:49:42.771Z"
+      },
+      {
+        "_index": "products",
+        "_type": "product",
+        "_id": "1002",
+        "_score": 0.4471386,
+        "_sourcetitle": "Wildcraft Bag (Blue)",
+        "_sourceprice": 34,
+        "_sourcecategories": "Bags",
+        "_sourcebrand": "Wildcraft",
+        "sync_time": "2018-06-01T16:49:42.771Z"
+      },
+      {
+        "_index": "products",
+        "_type": "product",
+        "_id": "1003",
+        "_score": 0.4471386,
+        "_sourcetitle": "Patagonia Bag (White)",
+        "_sourceprice": 40,
+        "_sourcecategories": "Bags",
+        "_sourcebrand": "Patagonia",
+        "sync_time": "2018-06-01T16:49:42.771Z"
+      },
+      {
+        "_index": "products",
+        "_type": "product",
+        "_id": "1001",
+        "_score": 0.18232156,
+        "_sourcetitle": "Wildcraft Bag (Red)",
+        "_sourceprice": 34,
+        "_sourcecategories": "Bags",
+        "_sourcebrand": "Wildcraft",
+        "sync_time": "2018-06-01T16:49:42.771Z"
+      },
+      {
+        "_index": "products",
+        "_type": "product",
+        "_id": "1004",
+        "_score": 0.18232156,
+        "_sourcetitle": "Puma Bag (Red)",
+        "_sourceprice": 50,
+        "_sourcecategories": "Bags",
+        "_sourcebrand": "Puma",
+        "sync_time": "2018-06-01T16:49:42.771Z"
+      }
+    ]
+  },
+  "delete": {
+    "search": [
+      {
+        "_index": "products",
+        "_type": "product",
+        "_id": "1005",
+        "_score": 0.80259144,
+        "_sourcetitle": "Puma Bag (Yellow)",
+        "_sourceprice": 34,
+        "_sourcecategories": "Bags",
+        "_sourcebrand": "Puma",
+        "sync_time": "2018-06-01T16:49:42.829Z"
+      },
+      {
+        "_index": "products",
+        "_type": "product",
+        "_id": "1004",
+        "_score": 0.6931472,
+        "_sourcetitle": "Puma Bag (Red)",
+        "_sourceprice": 50,
+        "_sourcecategories": "Bags",
+        "_sourcebrand": "Puma",
+        "sync_time": "2018-06-01T16:49:42.829Z"
+      }
+    ]
+  },
+  "schema": {
+    "search": {
+      "primary_key": [
+        "_id",
+        "_index",
+        "_type",
+        "sync_time"
+      ]
+    }
+  },
+  "hasMore": false
+}
