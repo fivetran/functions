@@ -21,15 +21,15 @@ async function update(state, secrets, callback) {
 
     listObjectsPromise.then(function (result) {
         for (var index = 0; index < result.Contents.length; index++) {
-            
-            // Only JSON files to be processed
+
+            // Only CSV files to be processed
             // We can add some pattern
-            if (!result.Contents[index].Key.endsWith(".tsv") || Date.parse(result.Contents[index].LastModified) <= Date.parse(state.since)) {
+            if (!result.Contents[index].Key.endsWith(".csv") || Date.parse(result.Contents[index].LastModified) <= Date.parse(state.since)) {
                 continue;
             }
 
             modifiedFiles.push(result.Contents[index]);
-            
+
             // If we want to process limited number of files in one lambda execution, so we should only add those number of files
             if (modifiedFiles.length === limitNumberOfFileToUpdateInOneRun) {
                 response.hasMore = true;
@@ -63,22 +63,25 @@ async function update(state, secrets, callback) {
             var rows=fileData.split("\n");
             var headers;
             var count=0;
-            
+
             for(var i in rows){
-                if(rows[i].trim().length===0)continue;
+
+                if(rows[i].length == 0)
+                continue;
+
                 count++;
-                var cols=rows[i].split("\t");
+                var cols=rows[i].split(",");
                 // Extract headers
                 if(count===1){
                     headers=cols;
                     continue;
                 }
-                
+
                 var obj={};
                 for(var j in cols){
                     obj[headers[j]]=cols[j];
                 }
-                if (modifiedFile.Key.endsWith("_delete.tsv")) {
+                if (modifiedFile.Key.endsWith("_delete.csv")) {
                     response.delete.near_earth_objects.push(obj);
                 } else{
                     response.insert.near_earth_objects.push(obj);
@@ -100,10 +103,10 @@ async function update(state, secrets, callback) {
 }
 
 function initializeResponse(state) {
-    // Don't assign the value directly, it means you are assigning as a reference, 
+    // Don't assign the value directly, it means you are assigning as a reference,
     // Now state of response doesn't get affected when change state variable in method
     return {
-        "state": {...state}, 
+        "state": {...state},
         "insert": {
             "near_earth_objects": []
         },
