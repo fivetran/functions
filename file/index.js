@@ -65,7 +65,7 @@ async function update(state, secrets, callback) {
             var count=0;
             
             for(var i in rows){
-            
+                if(rows[i].trim().length===0)continue;
                 count++;
                 var cols=rows[i].split("\t");
                 // Extract headers
