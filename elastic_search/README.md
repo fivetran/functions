@@ -15,6 +15,23 @@ Lambda function setup
 	`npm install elasticsearch`
 3. Create a zip file
 	`zip -r elastic_search_function.zip *`
+4. Create a Lambda function.
+   
+   For elastic search, execution role must have policy
+	```
+	{
+    	  "Version": "2012-10-17",
+    	  "Statement": [
+        	{
+            	  "Action": [
+                  "es:*"
+          	  ],
+          	  "Effect": "Allow",
+          	  "Resource": "*"
+        	}
+    	  ]
+	}
+	``` 
 4. Upload Lambda function
 5. Create a test sample with request
 	```
