@@ -2,8 +2,10 @@ Elastic search instance setup
 ===========================
 1. Create an elastic search instance
 2. Insert sample records in elastic search
+	
 	`curl -XPOST <your_elastic_search_host_name>/_bulk?pretty --data-binary @elastic_search_records.json -H 'Content-Type: application/json'`
 3. Test records in elastic search
+	
 	`curl -XGET '<your_elastic_search_host_name>/products/_search?q=Bag'`
 
 Lambda function setup
