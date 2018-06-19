@@ -1,0 +1,1 @@
+This function syncs Justin Bieber's twitter feed, as demoed in [this webinar](https://www.youtube.com/watch?v=HrOdDKOPqhg).
