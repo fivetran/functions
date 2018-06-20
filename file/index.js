@@ -48,7 +48,7 @@ async function update(state, secrets, callback) {
 
   // Sort in ascending order
   modifiedFiles.sort((a, b) => {
-    return a - b;
+    return Date.parse(a.LastModified) - Date.parse(b.LastModified);
   });
 
   // Process files one by one
