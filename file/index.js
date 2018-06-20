@@ -14,7 +14,7 @@ exports.handler = (request, context, callback) => {
   update(request.state, request.secrets, callback);
 };
 
-async function update(state, secrets, onError) {
+async function update(state, secrets, callback) {
   let response = initializeResponse(state);
 
   let modifiedFiles = [];
@@ -39,7 +39,7 @@ async function update(state, secrets, onError) {
       }
     }
   }).catch((err) => {
-    onError(err); // Return when some error occurred while listing objects in bucket
+    callback(err); // Return when some error occurred while listing objects in bucket
     console.log("Error in listing bucket", JSON.stringify(err) + "\n");
   });
 
@@ -86,7 +86,7 @@ async function update(state, secrets, onError) {
         }
       }
     }).catch((err) => {
-      onError(err); // Return when some error occurred while reading any file
+      callback(err); // Return when some error occurred while reading any file
       console.log("Error in getting object : " + err + "\n");
     });
 
@@ -95,24 +95,24 @@ async function update(state, secrets, onError) {
   }
 
   // Once response in generated use callback to finish lambda execution with response
-  onError(null, response);
+  callback(null, response);
 }
 
 function initializeResponse(state) {
-  // Don't assign the value directly, it means you are assigning as a reference, 
+  // Don't assign the value directly, it means you are assigning as a reference,
   // Now state of response doesn't get affected when change state variable in method
   return {
     state: { ...state
     },
     insert: {
-      "near_earth_objects": []
+      near_earth_objects: []
     },
     "delete": {
-      "near_earth_objects": []
+      near_earth_objects: []
     },
     schema: {
-      "near_earth_objects": {
-        "primary_key": ["neo_reference_id"]
+      near_earth_objects: {
+        primary_key: ["neo_reference_id"]
       }
     },
     hasMore: false
