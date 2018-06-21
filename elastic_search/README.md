@@ -38,7 +38,7 @@ Lambda function setup
 	{
        "state": {},
        "secrets": {
-        "host": "your_elastic_search_host_name"
+          "host": "your_elastic_search_host_name"
        }
 	}
 	```
