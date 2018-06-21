@@ -37,9 +37,9 @@ Lambda function setup
 	```
 	{
        "state": {},
-      "secrets": {
+       "secrets": {
         "host": "your_elastic_search_host_name"
-      }
+       }
 	}
 	```
 6. Run test to fetch records
