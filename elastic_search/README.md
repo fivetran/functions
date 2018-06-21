@@ -36,10 +36,10 @@ Lambda function setup
 5. Create a test sample with request
 	```
 	{
-    "state": {},
-    "secrets": {
+       "state": {},
+      "secrets": {
         "host": "your_elastic_search_host_name"
-    }
+      }
 	}
 	```
 6. Run test to fetch records
