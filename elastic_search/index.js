@@ -1,5 +1,5 @@
 /*
-This lambda function fetched search results from elastic search instance
+This lambda function fetches search results from elastic search instance
 
 Request parameter has two nodes, state and secret.
 `state` node is empty for the first request. In this lambda function, cursor for entity `search` is stored in `state` object.
@@ -11,11 +11,14 @@ Request parameter has two nodes, state and secret.
     }
 }
 
-Insert node contains records fetched using search query `bag`.
-Delete node contains records fetched using search query `puma`.
+Insert node contains records fetched using search query `Bag`.
+Delete node contains records fetched using search query `Puma`.
 
 Primary key for the records are [_id, _index, _type, sync_time]
 */
+
+const elasticsearch = require('elasticsearch');
+
 var RecordOperation = {
     INSERT : 1,
     DELETE : 2
@@ -31,13 +34,13 @@ async function update(state, secrets, callback) {
     let insertResponse = fetchSearchResult(state, secrets, 'products', 'product', 'Bag');
     let deleteResponse = fetchSearchResult(state, secrets, 'products', 'product', 'Puma');
     
-    insertResponse.then(function(searchResult) {
+    insertResponse.then((searchResult) => {
         putSearchResult(response, searchResult, RecordOperation.INSERT)
     }).catch(function (err) {
         callback(err); 
     });
     
-    deleteResponse.then(function(searchResult) {
+    deleteResponse.then((searchResult) => {
         putSearchResult(response, searchResult, RecordOperation.DELETE)
     }).catch(function (err) {
         callback(err); 
@@ -47,7 +50,7 @@ async function update(state, secrets, callback) {
     await deleteResponse;
     
     response.state = {
-        "search" : new Date()
+        search : new Date()
     }
     
     callback(null, response);
@@ -55,16 +58,16 @@ async function update(state, secrets, callback) {
 
 function initializeResponse(state) {
     return {
-        "state": {...state}, 
-        "insert": {
-            "search": []
+        state: {...state}, 
+        insert: {
+            search: []
         },
-        "delete": {
-            "search": []
+        delete: {
+            search: []
         },
-        "schema": {
-            "search": {
-                "primary_key": ['_id', '_index', '_type', 'sync_time']
+        schema: {
+            search: {
+                primary_key: ['_id', '_index', '_type', 'sync_time']
             }
         },
         hasMore: false
@@ -72,43 +75,35 @@ function initializeResponse(state) {
 }
 
 function fetchSearchResult(state, secrets, indexName, type, query) {
-    let elasticsearch = require('elasticsearch');
-    
     let client = new elasticsearch.Client({
   	    host: secrets.host,
   	    log: 'trace'
     });
     
-    let a = client.search({
+    let search = client.search({
         index: indexName,
         type: type,
         q: query
     });
     
-    return a;
+    return search;
 }
 
 function putSearchResult(response, searchResult, recordOperation) {
-    let index;
-    
     let hits = searchResult.hits.hits;
     
-    for(index = 0; index < hits.length; index++) {
-        let keys = Object.keys(hits[index]);
+    hits.forEach((hit) => {
+        let keys = Object.keys(hit);
         
-        let keyIndex;
         let result = {};
         
-        for(keyIndex = 0; keyIndex < keys.length; keyIndex++) {
-            let key = keys[keyIndex];
-            
-            if(hits[index][key] instanceof Object) {
-                putNestedObject(result, key, hits[index][key]);
-                continue;
+        keys.forEach((key) => {
+            if(hit[key] instanceof Object) {
+                putNestedObject(result, key, hit[key]);
+            } else {
+                result[key] = hit[key];
             }
-            
-            result[key] = hits[index][key];
-        }
+        });
         
         result['sync_time'] = new Date();
         
@@ -117,7 +112,7 @@ function putSearchResult(response, searchResult, recordOperation) {
         } else {
             response.delete.search.push(result);
         }
-    }
+    });
     
     return response;
 }
@@ -132,4 +127,3 @@ function putNestedObject(result, prefix, object) {
         result[prefix + key] = object[key];
     }
 }
-

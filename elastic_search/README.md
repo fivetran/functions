@@ -20,17 +20,17 @@ Lambda function setup
    For elastic search, execution role must have policy
 	```
 	{
-    	  "Version": "2012-10-17",
-    	  "Statement": [
-        	{
-            	  "Action": [
-                  "es:*"
-          	  ],
-          	  "Effect": "Allow",
-          	  "Resource": "*"
-        	}
-    	  ]
-	}
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+            "Action": [
+                "es:*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
+     ]
+   }
 	``` 
 4. Upload Lambda function
 5. Create a test sample with request
