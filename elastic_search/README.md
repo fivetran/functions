@@ -29,7 +29,7 @@ Lambda function setup
             "Effect": "Allow",
             "Resource": "*"
         }
-     ]
+      ]
    }
 	``` 
 4. Upload Lambda function
@@ -37,8 +37,8 @@ Lambda function setup
 	```
 	{
 	  "state" : {},
-          "secrets" : {
-		"host" : "your_elastic_search_host_name"
+    "secrets" : {
+		     "host" : "your_elastic_search_host_name"
 	  }
 	}
 	```
