@@ -11,7 +11,7 @@ function update(state, secret, callback) {
     let baseApi = "https://api.nasa.gov/neo/rest/v1/feed?start_date=" + new Date(since).toISOString().slice(0,10) + "&api_key=" + secret.apiKey;
         const request = https.get(baseApi, response => {
             if (response.statusCode < 200 || response.statusCode > 299)
-                callback(new Error('Request failed with code: ' + response.statusCode), null);
+                callback(new Error('Request failed with code: ' + response.statusCode));
 
             // temporary data holder
             let body = "";
@@ -42,7 +42,7 @@ function update(state, secret, callback) {
             });
         });
         
-        request.on('error', (err) => callback(err, null));
+        request.on('error', (err) => callback(err));
 }
 
 function flattenOneLevel(arr) {
