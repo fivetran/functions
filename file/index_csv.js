@@ -26,7 +26,7 @@ async function update(state, secrets, callback) {
 
       // Only TSV files to be processed
       // We can add some pattern
-      if (!result.Contents[index].Key.endsWith(".tsv") || Date.parse(result.Contents[index].LastModified) <= Date.parse(state.since)) {
+      if (!result.Contents[index].Key.endsWith(".csv") || Date.parse(result.Contents[index].LastModified) <= Date.parse(state.since)) {
         continue;
       }
 
