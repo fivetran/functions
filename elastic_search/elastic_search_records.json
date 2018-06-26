@@ -1,0 +1,10 @@
+{ "index" : { "_index" : "products", "_type" : "product", "_id" : "1001" } }
+{"title": "Wildcraft Bag (Red)", "price": 34, "categories" : "Bags", "brand" : "Wildcraft"}
+{ "index" : { "_index" : "products", "_type" : "product", "_id" : "1002" } }
+{"title": "Wildcraft Bag (Blue)", "price": 34, "categories" : "Bags", "brand" : "Wildcraft"}
+{ "index" : { "_index" : "products", "_type" : "product", "_id" : "1003" } }
+{"title": "Patagonia Bag (White)", "price": 40, "categories" : "Bags", "brand" : "Patagonia"}
+{ "index" : { "_index" : "products", "_type" : "product", "_id" : "1004" } }
+{"title": "Puma Bag (Red)", "price": 50, "categories" : "Bags", "brand" : "Puma"}
+{ "index" : { "_index" : "products", "_type" : "product", "_id" : "1005" } }
+{"title": "Puma Bag (Yellow)", "price": 34, "categories" : "Bags", "brand" : "Puma"}
