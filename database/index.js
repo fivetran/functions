@@ -1,9 +1,9 @@
-/*
+/**
 * create a folder then change path in the terminal/cmd to that folder and execute the command 'npm install mysql'
 * create an 'index.js' file in the same folder and copy the following code in it.
 * zip the folder and upload it to AWS Lambda.
 */
-/*
+/**
 * Following code is based on the assumption that the table structure consists of a column named 'last_modified(timestamp)' on the basis of which incremental update will happen
 * and 'isDeleted(int11)' whose value defines if that particular row has been deleted or not (0 - not deleted, 1 - deleted).
 */
@@ -40,7 +40,8 @@ exports.handler = (request, context, callback) => {
         let deleteTransactions = [];
         let cursor;
         for (i in results) {
-          /* store the record as a key value pair of attribute name and attribute value
+          /**
+          * store the record as a key value pair of attribute name and attribute value
           * 'last_modified' is the column on the basis of which incremental update will happen
           * 'isDeleted' defines if the column has been deleted or not
           */
