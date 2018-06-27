@@ -24,7 +24,7 @@ async function update(state, secrets, callback) {
   listObjectsPromise.then((result) => {
     for (let index = 0; index < result.Contents.length; index++) {
 
-      // Only TSV files to be processed
+      // Only CSV files to be processed
       // We can add some pattern
       if (!result.Contents[index].Key.endsWith(".csv") || Date.parse(result.Contents[index].LastModified) <= Date.parse(state.since)) {
         continue;
