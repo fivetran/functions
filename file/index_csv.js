@@ -8,7 +8,7 @@ let bucketParams = {
   Bucket: bucketName
 };
 
-let limitNumberOfFileToUpdateInOneRun = 2;
+let limitNumberOfFilesToUpdateInOneRun = 2;
 
 exports.handler = (request, context, callback) => {
   update(request.state, request.secrets, callback);
@@ -19,9 +19,7 @@ async function update(state, secrets, callback) {
 
   let modifiedFiles = [];
 
-  let listObjectsPromise = s3.listObjects(bucketParams).promise();
-
-  listObjectsPromise.then((result) => {
+await s3.listObjects(bucketParams).promise().then((result) => {
     for (let index = 0; index < result.Contents.length; index++) {
 
       // Only CSV files to be processed
@@ -33,7 +31,7 @@ async function update(state, secrets, callback) {
       modifiedFiles.push(result.Contents[index]);
 
       // If we want to process limited number of files in one lambda execution, so we should only add those number of files
-      if (modifiedFiles.length === limitNumberOfFileToUpdateInOneRun) {
+      if (modifiedFiles.length === limitNumberOfFilesToUpdateInOneRun) {
         response.hasMore = true;
         break;
       }
@@ -43,56 +41,55 @@ async function update(state, secrets, callback) {
     console.log("Error in listing bucket", JSON.stringify(err) + "\n");
   });
 
-  // Waiting for listing of objects so we can get all modified files
-  await listObjectsPromise;
-
   // Sort in ascending order
   modifiedFiles.sort((a, b) => {
     return Date.parse(a.LastModified) - Date.parse(b.LastModified);
   });
 
   // Process files one by one
-  for (let modifiedFile of modifiedFiles) {
+
+  modifiedFiles.forEach(modifiedFile => {
 
     let params = {
-      Bucket: bucketName,
-      Key: modifiedFile.Key
-    };
+        Bucket: bucketName,
+        Key: modifiedFile.Key
+      };
 
-    await s3.getObject(params).promise().then((result) => {
-      let fileData = result.Body.toString('utf-8');
-      let rows = fileData.split("\n");
-      let headers;
-      let count = 0;
+      await s3.getObject(params).promise().then((result) => {
+        let fileData = result.Body.toString('utf-8');
+        let rows = fileData.split("\n");
+        let headers;
+        let count = 0;
 
-      for (let i in rows) {
-        if (rows[i].trim().length === 0) continue;
-        count++;
-        let cols = rows[i].split(",");
-        // Extract headers
-        if (count === 1) {
-          headers = cols;
-          continue;
-        }
+        rows.forEach(row => {
+            if (rows[row].trim().length === 0) continue;
+          count++;
+          let cols = rows[row].split(",");
+          // Extract headers
+          if (count === row) {
+            headers = cols;
+            continue;
+          }
 
-        let obj = {};
-        for (let j in cols) {
-          obj[headers[j]] = cols[j];
-        }
-        if (modifiedFile.Key.endsWith("_delete.csv")) {
-          response.delete.near_earth_objects.push(obj);
-        } else {
-          response.insert.near_earth_objects.push(obj);
-        }
-      }
-    }).catch((err) => {
-      callback(err); // Return when some error occurred while reading any file
-      console.log("Error in getting object : " + err + "\n");
-    });
+          let obj = {};
 
-    // Same last modified of processed file so we process files after that in next run
-    response.state.since = modifiedFile.LastModified;
-  }
+          cols.forEach(col => {
+              obj[headers[col]] = cols[col];
+          });
+          if (modifiedFile.Key.endsWith("_delete.csv")) {
+            response.delete.near_earth_objects.push(obj);
+          } else {
+            response.insert.near_earth_objects.push(obj);
+          }
+        });
+      }).catch((err) => {
+        callback(err); // Return when some error occurred while reading any file
+        console.log("Error in getting object : " + err + "\n");
+      });
+
+      // Same last modified of processed file so we process files after that in next run
+      response.state.since = modifiedFile.LastModified;
+});
 
   // Once response in generated use callback to finish lambda execution with response
   callback(null, response);
