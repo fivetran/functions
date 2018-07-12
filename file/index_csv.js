@@ -19,7 +19,7 @@ async function update(state, secrets, callback) {
 
   let modifiedFiles = [];
 
-await s3.listObjects(bucketParams).promise().then((result) => {
+  await s3.listObjects(bucketParams).promise().then((result) => {
     for (let index = 0; index < result.Contents.length; index++) {
 
       // Only CSV files to be processed
@@ -47,49 +47,48 @@ await s3.listObjects(bucketParams).promise().then((result) => {
   });
 
   // Process files one by one
-
-  modifiedFiles.forEach(modifiedFile => {
+  for (let modifiedFile of modifiedFiles) {
 
     let params = {
-        Bucket: bucketName,
-        Key: modifiedFile.Key
-      };
+      Bucket: bucketName,
+      Key: modifiedFile.Key
+    };
 
-      await s3.getObject(params).promise().then((result) => {
-        let fileData = result.Body.toString('utf-8');
-        let rows = fileData.split("\n");
-        let headers;
-        let count = 0;
+    await s3.getObject(params).promise().then((result) => {
+      let fileData = result.Body.toString('utf-8');
+      let rows = fileData.split("\n");
+      let headers;
+      let count = 0;
 
-        rows.forEach(row => {
-            if (rows[row].trim().length === 0) continue;
-          count++;
-          let cols = rows[row].split(",");
-          // Extract headers
-          if (count === row) {
-            headers = cols;
-            continue;
-          }
+      for (let row in rows) {
+        if (rows[row].trim().length === 0) continue;
+        count++;
+        let cols = rows[row].split(",");
+        // Extract headers
+        if (count === 1) {
+          headers = cols;
+          continue;
+        }
 
-          let obj = {};
+        let obj = {};
 
-          cols.forEach(col => {
-              obj[headers[col]] = cols[col];
-          });
-          if (modifiedFile.Key.endsWith("_delete.csv")) {
-            response.delete.near_earth_objects.push(obj);
-          } else {
-            response.insert.near_earth_objects.push(obj);
-          }
-        });
-      }).catch((err) => {
-        callback(err); // Return when some error occurred while reading any file
-        console.log("Error in getting object : " + err + "\n");
-      });
+        for (let col in cols) {
+          obj[headers[col]] = cols[col];
+        }
+        if (modifiedFile.Key.endsWith("_delete.csv")) {
+          response.delete.near_earth_objects.push(obj);
+        } else {
+          response.insert.near_earth_objects.push(obj);
+        }
+      }
+    }).catch((err) => {
+      callback(err); // Return when some error occurred while reading any file
+      console.log("Error in getting object : " + err + "\n");
+    });
 
-      // Same last modified of processed file so we process files after that in next run
-      response.state.since = modifiedFile.LastModified;
-});
+    // Same last modified of processed file so we process files after that in next run
+    response.state.since = modifiedFile.LastModified;
+  }
 
   // Once response in generated use callback to finish lambda execution with response
   callback(null, response);
