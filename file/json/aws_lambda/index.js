@@ -6,7 +6,7 @@ let s3 = new AWS.S3();
 let bucketName = 'lambda-function-records';
 let bucketParams = { Bucket: bucketName };
 
-let limitNumberOfFileToUpdateInOneRun = 1;
+let limitNumberOfFileToUpdateInOneRun = 2;
 
 exports.handler = (request, context, callback) => {
     update(request.state, request.secrets, callback);
@@ -19,7 +19,7 @@ async function update(state, secrets, callback) {
 
     let listObjectsPromise = s3.listObjects(bucketParams).promise();
 
-    listObjectsPromise.then(function (result) {
+    listObjectsPromise.then(result => {
         for (let index = 0; index < result.Contents.length; index++) {
             
             // Only JSON files to be processed
@@ -36,7 +36,7 @@ async function update(state, secrets, callback) {
                 break;
             }
         }
-    }).catch(function (err) {
+    }).catch(err => {
         callback(err); // Return when some error occurred while listing objects in bucket
         console.log("Error in listing bucket", JSON.stringify(err) + "\n");
     });
@@ -45,7 +45,7 @@ async function update(state, secrets, callback) {
     await listObjectsPromise;
 
     // Sort in ascending order
-    modifiedFiles.sort(function (a, b) { return (a.LastModified > b.LastModified) ? 1 : ((b.LastModified > a.LastModified) ? -1 : 0); });
+    modifiedFiles.sort((a, b) => { return (a.LastModified > b.LastModified) ? 1 : ((b.LastModified > a.LastModified) ? -1 : 0); });
 
     // Process files one by one
     for (let index = 0; index < modifiedFiles.length; index++) {
@@ -58,7 +58,7 @@ async function update(state, secrets, callback) {
 
         let getObjectPromise = s3.getObject(params).promise();
 
-        getObjectPromise.then(function (result) {
+        getObjectPromise.then(result => {
             let fileData = JSON.parse(result.Body.toString('utf-8'));
 
             if (modifiedFile.Key.endsWith("_delete.json")) {
@@ -82,7 +82,7 @@ async function update(state, secrets, callback) {
             }
 
 
-        }).catch(function (err) {
+        }).catch(err => {
             callback(err); // Return when some error occurred while reading any file
             console.log("Error in getting object : " + err + "\n");
         });
