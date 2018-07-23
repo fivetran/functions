@@ -84,16 +84,16 @@ function initializeResponse(state) {
     // Don't assign the value directly, it means you are assigning as a reference, 
     // Now state of response doesn't get affected when change state variable in method
     return {
-        "state": { ...state },
-        "insert": {
-            "near_earth_objects": []
+        state: { ...state },
+        insert: {
+            near_earth_objects: []
         },
         "delete": {
-            "near_earth_objects": []
+            near_earth_objects: []
         },
-        "schema": {
-            "near_earth_objects": {
-                "primary_key": ["neo_reference_id"]
+        schema: {
+            near_earth_objects: {
+                primary_key: ["neo_reference_id"]
             }
         },
         hasMore: false
