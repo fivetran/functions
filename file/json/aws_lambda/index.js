@@ -53,6 +53,7 @@ async function update(state, secrets, callback) {
         await s3.getObject(params).promise().then(result => {
             let fileData = JSON.parse(result.Body.toString('utf-8'));
 
+            // Deletes are save in file ending with _delete.json, otherwise file will contain records
             if (modifiedFile.Key.endsWith("_delete.json")) {
                 fileData.deletes.forEach(d => response.delete.near_earth_objects.push(d));
             } else {
@@ -72,7 +73,7 @@ async function update(state, secrets, callback) {
             console.log("Error in getting object : " + err + "\n");
         });
 
-        // Same last modified of processed file so we process files after that in next run
+        // Save last modified of processed file so we process files after that in next run
         response.state.since = modifiedFile.LastModified;
     }
 
