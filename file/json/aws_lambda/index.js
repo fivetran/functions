@@ -3,7 +3,7 @@
 const AWS = require('aws-sdk');
 let s3 = new AWS.S3();
 
-let bucketName = 'lambda-function-records';
+let bucketName = "lambda-function-records";
 let bucketParams = { Bucket: bucketName };
 
 let limitNumberOfFileToUpdateInOneRun = 2;
