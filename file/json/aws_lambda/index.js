@@ -54,23 +54,18 @@ async function update(state, secrets, callback) {
             let fileData = JSON.parse(result.Body.toString('utf-8'));
 
             if (modifiedFile.Key.endsWith("_delete.json")) {
-                for (let deleteIndex = 0; deleteIndex < fileData.deletes.length; deleteIndex++) {
-                    let r = fileData.deletes[deleteIndex];
-                    response.delete.near_earth_objects.push(r);
-                }
+                fileData.deletes.forEach(d => response.delete.near_earth_objects.push(d));
             } else {
                 let keys = Object.keys(fileData.near_earth_objects);
 
-                for (let keyIndex = 0; keyIndex < keys.length; keyIndex++) {
-
-                    let key = keys[keyIndex];
-
-                    for (let valueIndex = 0; valueIndex < fileData.near_earth_objects[key].length; valueIndex++) {
-                        let r = fileData.near_earth_objects[key][valueIndex];
-                        r['date'] = key;
-                        response.insert.near_earth_objects.push(r);
-                    }
-                }
+                keys.forEach(key => {
+                    fileData.near_earth_objects[key].forEach(
+                        data => {
+                            data['date'] = key;
+                            response.insert.near_earth_objects.push(data);
+                        }
+                    );
+                });
             }
         }).catch(err => {
             callback(err); // Return when some error occurred while reading any file
