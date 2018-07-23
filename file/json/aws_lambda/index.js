@@ -1,12 +1,12 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-var s3 = new AWS.S3();
+let s3 = new AWS.S3();
 
-var bucketName = 'lambda-function-records';
-var bucketParams = { Bucket: bucketName };
+let bucketName = 'lambda-function-records';
+let bucketParams = { Bucket: bucketName };
 
-var limitNumberOfFileToUpdateInOneRun = 1;
+let limitNumberOfFileToUpdateInOneRun = 1;
 
 exports.handler = (request, context, callback) => {
     update(request.state, request.secrets, callback);
@@ -20,7 +20,7 @@ async function update(state, secrets, callback) {
     let listObjectsPromise = s3.listObjects(bucketParams).promise();
 
     listObjectsPromise.then(function (result) {
-        for (var index = 0; index < result.Contents.length; index++) {
+        for (let index = 0; index < result.Contents.length; index++) {
             
             // Only JSON files to be processed
             // We can add some pattern
@@ -48,7 +48,7 @@ async function update(state, secrets, callback) {
     modifiedFiles.sort(function (a, b) { return (a.LastModified > b.LastModified) ? 1 : ((b.LastModified > a.LastModified) ? -1 : 0); });
 
     // Process files one by one
-    for (var index = 0; index < modifiedFiles.length; index++) {
+    for (let index = 0; index < modifiedFiles.length; index++) {
         let modifiedFile = modifiedFiles[index];
 
         let params = {
@@ -62,18 +62,18 @@ async function update(state, secrets, callback) {
             let fileData = JSON.parse(result.Body.toString('utf-8'));
 
             if (modifiedFile.Key.endsWith("_delete.json")) {
-                for (var deleteIndex = 0; deleteIndex < fileData.deletes.length; deleteIndex++) {
-                    var r = fileData.deletes[deleteIndex];
+                for (let deleteIndex = 0; deleteIndex < fileData.deletes.length; deleteIndex++) {
+                    let r = fileData.deletes[deleteIndex];
                     response.delete.near_earth_objects.push(r);
                 }
             } else {
                 let keys = Object.keys(fileData.near_earth_objects);
 
-                for (var keyIndex = 0; keyIndex < keys.length; keyIndex++) {
+                for (let keyIndex = 0; keyIndex < keys.length; keyIndex++) {
 
                     let key = keys[keyIndex];
 
-                    for (var valueIndex = 0; valueIndex < fileData.near_earth_objects[key].length; valueIndex++) {
+                    for (let valueIndex = 0; valueIndex < fileData.near_earth_objects[key].length; valueIndex++) {
                         let r = fileData.near_earth_objects[key][valueIndex];
                         r['date'] = key;
                         response.insert.near_earth_objects.push(r);
