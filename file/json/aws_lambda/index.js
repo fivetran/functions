@@ -6,7 +6,7 @@ let s3 = new AWS.S3();
 let bucketName = "lambda-function-records";
 let bucketParams = { Bucket: bucketName };
 
-let limitNumberOfFileToUpdateInOneRun = 2;
+let limitNumberOfFilesToUpdateInOneRun = 2;
 
 exports.handler = (request, context, callback) => {
     update(request.state, request.secrets, callback);
@@ -28,7 +28,7 @@ async function update(state, secrets, callback) {
             modifiedFiles.push(result.Contents[index]);
 
             // If we want to process limited number of files in one lambda execution, so we should only add those number of files
-            if (modifiedFiles.length === limitNumberOfFileToUpdateInOneRun) {
+            if (modifiedFiles.length === limitNumberOfFilesToUpdateInOneRun) {
                 response.hasMore = true;
                 break;
             }
