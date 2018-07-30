@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-const AWS = require('aws-sdk');
-let s3 = new AWS.S3();
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3();
 
-let bucketName = 'lambda-function-records';
-let bucketParams = {
+const bucketName = "lambda-function-records";
+const bucketParams = {
   Bucket: bucketName
 };
 
-let limitNumberOfFilesToUpdateInOneRun = 2;
+const limitNumberOfFilesToUpdateInOneRun = 2;
 
 exports.handler = (request, context, callback) => {
   update(request.state, request.secrets, callback);
@@ -20,15 +20,15 @@ async function update(state, secrets, callback) {
   let modifiedFiles = [];
 
   await s3.listObjects(bucketParams).promise().then((result) => {
-    for (let index = 0; index < result.Contents.length; index++) {
 
-      // Only CSV files to be processed
+    for (const content of result.Contents) {
+       // Only CSV files to be processed
       // We can add some pattern
-      if (!result.Contents[index].Key.endsWith(".csv") || Date.parse(result.Contents[index].LastModified) <= Date.parse(state.since)) {
+      if (!content.Key.endsWith(".csv") || Date.parse(content.LastModified) <= Date.parse(state.since)) {
         continue;
       }
 
-      modifiedFiles.push(result.Contents[index]);
+      modifiedFiles.push(content);
 
       // If we want to process limited number of files in one lambda execution, so we should only add those number of files
       if (modifiedFiles.length === limitNumberOfFilesToUpdateInOneRun) {
@@ -47,7 +47,7 @@ async function update(state, secrets, callback) {
   });
 
   // Process files one by one
-  for (let modifiedFile of modifiedFiles) {
+  for (const modifiedFile of modifiedFiles) {
 
     let params = {
       Bucket: bucketName,
@@ -55,7 +55,7 @@ async function update(state, secrets, callback) {
     };
 
     await s3.getObject(params).promise().then((result) => {
-      let fileData = result.Body.toString('utf-8');
+      let fileData = result.Body.toString("utf-8");
       let rows = fileData.split("\n");
       let headers;
       let count = 0;
