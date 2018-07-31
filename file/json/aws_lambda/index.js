@@ -1,12 +1,12 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-let s3 = new AWS.S3();
+const s3 = new AWS.S3();
 
-let bucketName = "lambda-function-records";
-let bucketParams = { Bucket: bucketName };
+const bucketName = "lambda-function-records";
+const bucketParams = { Bucket: bucketName };
 
-let limitNumberOfFilesToUpdateInOneRun = 2;
+const limitNumberOfFilesToUpdateInOneRun = 2;
 
 exports.handler = (request, context, callback) => {
     update(request.state, request.secrets, callback);
@@ -18,14 +18,14 @@ async function update(state, secrets, callback) {
     let modifiedFiles = [];
 
     await s3.listObjects(bucketParams).promise().then(result => {
-        for (let index = 0; index < result.Contents.length; index++) {
+        for (let content of result.Contents) {
             // Only JSON files to be processed
             // We can add some pattern
-            if (!result.Contents[index].Key.endsWith(".json") || Date.parse(result.Contents[index].LastModified) <= Date.parse(state.since)) {
+            if (!content.Key.endsWith(".json") || Date.parse(content.LastModified) <= Date.parse(state.since)) {
                 continue;
             }
 
-            modifiedFiles.push(result.Contents[index]);
+            modifiedFiles.push(content);
 
             // If we want to process limited number of files in one lambda execution, so we should only add those number of files
             if (modifiedFiles.length === limitNumberOfFilesToUpdateInOneRun) {
@@ -42,16 +42,14 @@ async function update(state, secrets, callback) {
     modifiedFiles.sort((a, b) => (a.LastModified > b.LastModified) ? 1 : ((b.LastModified > a.LastModified) ? -1 : 0));
 
     // Process files one by one
-    for (let index = 0; index < modifiedFiles.length; index++) {
-        let modifiedFile = modifiedFiles[index];
-
+    for (let modifiedFile of modifiedFiles) {
         let params = {
             Bucket: bucketName,
             Key: modifiedFile.Key
         };
 
         await s3.getObject(params).promise().then(result => {
-            let fileData = JSON.parse(result.Body.toString('utf-8'));
+            let fileData = JSON.parse(result.Body.toString("utf-8"));
 
             // Deletes are save in file ending with _delete.json, otherwise file will contain records
             if (modifiedFile.Key.endsWith("_delete.json")) {
