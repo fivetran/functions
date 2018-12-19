@@ -40,8 +40,9 @@ def write_log_s3(cursor_row, client, bucket_name, key_cursor_file):
 
 
 # Handler function
-def lambda_handler(event, context):
+def lambda_handler(request, context):
     # 1. Import AWS and database credentials from a separate file
+    # These and other parameters can also be wrapped up in "request," which is relayed from the connector "secrets"
     with open("aws_credentials/credentials.csv") as credentials:
         reader = list(csv.DictReader(credentials))
         access_key_id = reader[0]['Access key ID']
@@ -74,6 +75,7 @@ def lambda_handler(event, context):
 
     # Make sure you should know these details about the table you are migrating beforehand
     # Set the "limit" according to your estimates of the table's size and row count
+    # Again, these can also be stored in "request"
     table = "sales"
     primary_key = "salesid"
     cursor = "saletime"
@@ -115,6 +117,6 @@ def lambda_handler(event, context):
     response['hasMore'] = False
 
     # Write the save state to S3
-    write_log_s3(response['insert'][table][-1][cursor], client, bucket_name, key_cursor_file)
+    write_log_s3(response['state'], client, bucket_name, key_cursor_file)
 
     return response
