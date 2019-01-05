@@ -1,9 +1,6 @@
 from datetime import datetime, date
-from time import time, struct_time, mktime
-import boto3
-import csv
+from time import struct_time, mktime
 import decimal
-import json
 import pg8000
 
 
@@ -17,7 +14,7 @@ def get_connection(database, host, port, user, password):
     return conn
 
 
-# Handle data types such as datetime and decimal
+# Handle Python data types such as datetime and decimal
 def encode_json(data):
     if isinstance(data, datetime):
         return str(data)
@@ -30,44 +27,21 @@ def encode_json(data):
     return data
 
 
-# Write a log file containing your save state to S3
-def write_log_s3(cursor_row, client, bucket_name, key_cursor_file):
-        output = {
-            "timestamp": datetime.fromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S'),
-            "cursor": cursor_row
-        }
-        client.put_object(Body=json.dumps(output), Bucket=bucket_name, Key=key_cursor_file)
-
-
 # Handler function
 def lambda_handler(request, context):
-    # 1. Import AWS and database credentials from a separate file
-    # These and other parameters can also be wrapped up in "request," which is relayed from the connector "secrets"
-    with open("aws_credentials/credentials.csv") as credentials:
-        reader = list(csv.DictReader(credentials))
-        access_key_id = reader[0]['Access key ID']
-        aws_secret_access_key = reader[0]['Secret access key']
-        dbname = reader[0]['dbname']
-        host = reader[0]['host']
-        port = int(reader[0]['port'])
-        user = reader[0]['user']
-        password = reader[0]['password']
+    # 1. Import AWS and database credentials
+    # These and other parameters should be wrapped up in "request," which is relayed from the connector's "secrets"
+    dbname = request['dbname']
+    host = request['host']
+    port = int(request['port'])
+    user = request['user']
+    password = request['password']
 
-    # 2. Access S3; Instantiate some boto3 objects so that you can see what's in S3
-    client = boto3.client('s3',
-                          aws_access_key_id=access_key_id,
-                          aws_secret_access_key=aws_secret_access_key
-                          )
-
-    resource = boto3.resource('s3',
-                              aws_access_key_id=access_key_id,
-                              aws_secret_access_key=aws_secret_access_key
-                              )
-
-    # You will obviously need to substitute your own bucket and file names
-    bucket_name = "short-redshift-migration"
-    key_cursor_file = "test_logs/log.json"
-    bucket = resource.Bucket(bucket_name)
+    # 2. Set state
+    try:
+        cursor_value = request['state']['cursor']
+    except KeyError:
+        cursor_value = "1970-01-01T00:00:00"
 
     # 3. Connect to Redshift
     con = get_connection(dbname, host, port, user, password)
@@ -76,21 +50,14 @@ def lambda_handler(request, context):
     # Make sure you should know these details about the table you are migrating beforehand
     # Set the "limit" according to your estimates of the table's size and row count
     # Again, these can also be stored in "request"
-    table = "sales"
-    primary_key = "salesid"
-    cursor = "saletime"
-    limit = 50
+    table = request["table"]
+    primary_key = request["primary_key"]
+    cursor = request["cursor"]
+    limit = request["limit"]
 
     # 4. Query redshift; check for the existence of your save state
-    if key_cursor_file in [item.key for item in bucket.objects.all()]:
-
-        cursor_object = client.get_object(Bucket=bucket_name, Key=key_cursor_file)['Body']
-        cursor_value = json.load(cursor_object)['cursor']
-        cur.execute("SELECT * FROM {table} WHERE {cursor} > '{cursor_value}' ORDER BY {cursor} LIMIT {limit}".format(
+    cur.execute("SELECT * FROM {table} WHERE {cursor} > '{cursor_value}' ORDER BY {cursor} LIMIT {limit}".format(
             cursor_value=cursor_value, cursor=cursor, limit=limit, table=table))
-    else:
-        cur.execute("SELECT * FROM {table} ORDER BY {cursor} LIMIT {limit}".format(cursor=cursor, limit=limit,
-                                                                                   table=table))
 
     # Get column names
     columns = [item[0].decode() for item in cur.description]
@@ -107,16 +74,14 @@ def lambda_handler(request, context):
     response['insert'] = {table: []}
 
     for row in output_data:
-        row_data = {}
-        for numb in range(len(columns)):
-            row_data[columns[numb]] = encode_json(row[numb])
+        serialized_row = [encode_json(item) for item in row]
+        row_data = dict(zip(columns, serialized_row))
         response['insert'][table].append(row_data)
 
-    response['state'] = response['insert'][table][-1][cursor]
+    response['state'] = request['state'] if len(output_data) == 0 else {"cursor": response['insert'][table][-1][cursor]}
     response['schema'] = {table: {"primary_key": [primary_key]}}
-    response['hasMore'] = False
+    response['hasMore'] = False if len(output_data) < limit else True
 
-    # Write the save state to S3
-    write_log_s3(response['state'], client, bucket_name, key_cursor_file)
+    print(response)
 
     return response
