@@ -31,27 +31,20 @@ def lambda_handler(request, context):
     # Iterate through the items returned by the API
     for entry in item_list:
         entry_item = {}
-        entry_tasks = []
-        entry_warnings = []
         for k, v in entry.items():
             if k != 'status':
                 entry_item[k] = v
             else:
 
+                result_tasks += [{'id': entry['id'], 'message': task['message'], 'code': task['code']} for task in
+                                 v['tasks']]
+                result_warnings += [{'id': entry['id'], 'message': task['message'], 'code': task['code']} for task in
+                                    v['warnings']]
+
                 for sub_key in ['sync_state', 'setup_state', 'is_historical_sync', 'update_state']:
                     entry_item[sub_key] = v[sub_key]
 
-                for task in v['tasks']:
-                    entry_tasks.append({'id': entry['id'],
-                                        'message': task['message'],
-                                        'code': task['code']})
-                for warning in v['warnings']:
-                    entry_warnings.append({'id': entry['id'],
-                                           'message': warning['message'],
-                                           'code': warning['code']})
         result_items.append(entry_item)
-        result_tasks.extend(entry_tasks)
-        result_warnings.extend(entry_warnings)
 
     result = {}
     result['state'] = {timestamp: timestamp}
@@ -60,4 +53,3 @@ def lambda_handler(request, context):
                         'warnings': result_warnings}
 
     return result
-
