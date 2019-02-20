@@ -30,7 +30,7 @@ def encode_json(data):
 # Handler function
 def lambda_handler(request, context):
     # 1. Import AWS and database credentials
-    # These and other parameters should be wrapped up in "request," which is relayed from the connector's "secrets"
+    # These and other parameters should be wrapped up in 'request,' which is relayed from the connector's 'secrets'
     dbname = request['secrets']['dbname']
     host = request['secrets']['host']
     port = int(request['secrets']['port'])
@@ -41,22 +41,22 @@ def lambda_handler(request, context):
     try:
         cursor_value = request['state']['cursor']
     except KeyError:
-        cursor_value = "1970-01-01T00:00:00"
+        cursor_value = '1970-01-01T00:00:00'
 
     # 3. Connect to Redshift
     con = get_connection(dbname, host, port, user, password)
     cur = con.cursor()
 
     # Make sure you should know these details about the table you are migrating beforehand
-    # Set the "limit" according to your estimates of the table's size and row count
-    # Again, these can also be stored in "request"
-    table = request['secrets']["table"]
-    primary_key = request['secrets']["primary_key"]
-    cursor = request['secrets']["cursor"]
-    limit = request['secrets']["limit"]
+    # Set the 'limit' according to your estimates of the table's size and row count
+    # Again, these can also be stored in 'request'
+    table = request['secrets']['table']
+    primary_key = request['secrets']['primary_key']
+    cursor = request['secrets']['cursor']
+    limit = request['secrets']['limit']
 
     # 4. Query redshift; check for the existence of your save state
-    cur.execute("SELECT * FROM {table} WHERE {cursor} > '{cursor_value}' ORDER BY {cursor} LIMIT {limit}".format(
+    cur.execute('SELECT * FROM {table} WHERE {cursor} > '{cursor_value}' ORDER BY {cursor} LIMIT {limit}'.format(
             cursor_value=cursor_value, cursor=cursor, limit=limit, table=table))
 
     # Get column names
@@ -65,7 +65,7 @@ def lambda_handler(request, context):
     # Get data
     output_data = cur.fetchall()
 
-    # Handle exception; stop once you reach the end of the table. Avoids "out of index" error on line 113
+    # Handle exception; stop once you reach the end of the table. Avoids 'out of index' error on line 113
     if len(output_data) == 0:
         return {}
 
@@ -78,8 +78,8 @@ def lambda_handler(request, context):
         row_data = dict(zip(columns, serialized_row))
         response['insert'][table].append(row_data)
 
-    response['state'] = request['state'] if len(output_data) == 0 else {"cursor": response['insert'][table][-1][cursor]}
-    response['schema'] = {table: {"primary_key": [primary_key]}}
+    response['state'] = request['state'] if len(output_data) == 0 else {'cursor': response['insert'][table][-1][cursor]}
+    response['schema'] = {table: {'primary_key': [primary_key]}}
     response['hasMore'] = False if len(output_data) < limit else True
 
     print(response)
