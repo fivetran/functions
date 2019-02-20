@@ -31,11 +31,11 @@ def encode_json(data):
 def lambda_handler(request, context):
     # 1. Import AWS and database credentials
     # These and other parameters should be wrapped up in "request," which is relayed from the connector's "secrets"
-    dbname = request['dbname']
-    host = request['host']
-    port = int(request['port'])
-    user = request['user']
-    password = request['password']
+    dbname = request['secrets']['dbname']
+    host = request['secrets']['host']
+    port = int(request['secrets']['port'])
+    user = request['secrets']['user']
+    password = request['secrets']['password']
 
     # 2. Set state
     try:
@@ -50,10 +50,10 @@ def lambda_handler(request, context):
     # Make sure you should know these details about the table you are migrating beforehand
     # Set the "limit" according to your estimates of the table's size and row count
     # Again, these can also be stored in "request"
-    table = request["table"]
-    primary_key = request["primary_key"]
-    cursor = request["cursor"]
-    limit = request["limit"]
+    table = request['secrets']["table"]
+    primary_key = request['secrets']["primary_key"]
+    cursor = request['secrets']["cursor"]
+    limit = request['secrets']["limit"]
 
     # 4. Query redshift; check for the existence of your save state
     cur.execute("SELECT * FROM {table} WHERE {cursor} > '{cursor_value}' ORDER BY {cursor} LIMIT {limit}".format(

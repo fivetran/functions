@@ -1,17 +1,21 @@
 import datetime
-import json
-import requests
+from botocore.vendored import requests
 import time
 
 
 def lambda_handler(request, context):
 
     # Fivetran API URL
-    url = "http://api.fivetran.com/v1/groups/{group_id}/connectors".format(group_id=request['GROUP_ID'])
+    api_key = request['secrets']['api_key']
+    group_id = request['secrets']['group_id']
+    api_secret = request['secrets']['api_secret']
+
+    url = "http://api.fivetran.com/v1/groups/{group_id}/connectors".format(group_id=group_id)
 
     # Make a request to the endpoint using the correct auth values
-    auth_values = (request['API_KEY'], request['API_SECRET'])
-    response = requests.get(url, auth=auth_values)
+
+    auth_values = (api_key, api_secret)
+    response = requests.request("GET", url, auth=auth_values)
 
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
@@ -55,6 +59,5 @@ def lambda_handler(request, context):
                         "tasks": result_tasks,
                         "warnings": result_warnings}
 
-    print(json.dumps(result))
-    return json.dumps(result)
+    return result
 
