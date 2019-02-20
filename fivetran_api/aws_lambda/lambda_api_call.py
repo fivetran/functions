@@ -36,7 +36,7 @@ def lambda_handler(request, context):
         for k, v in entry.items():
             if k != 'status':
                 entry_item[k] = v
-            elif k == 'status':
+            else:
 
                 for sub_key in ['sync_state', 'setup_state', 'is_historical_sync', 'update_state']:
                     entry_item[sub_key] = v[sub_key]
