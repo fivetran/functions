@@ -3,8 +3,6 @@ import requests
 
 
 def make_request(url, api_key):
-    # DISCLAIMER - PASSING AN API KEY DIRECTLY INTO AN HTTP REQUEST CAN BE CONSIDERED BAD PRACTICE
-    # IN PRODUCTION YOU MIGHT WANT TO ENCRYPT YOUR KEY
     headers = {"Authorization": "Bearer {0}".format(api_key)}
     r = requests.get(url, headers=headers)
     return json.loads(r.text)
