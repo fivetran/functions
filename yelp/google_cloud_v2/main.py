@@ -17,11 +17,6 @@ def assemble_response_json(insert, state):
                     "id"
                 ]
             },
-            "categories": {
-                "primary_key": [
-                    "alias"
-                ]
-            },
             "business_category": {
             }
         },
@@ -39,6 +34,7 @@ def handler(request):
 
     # GET THE CREDENTIALS FROM THE TRIGGERING EVENT
     request_json = request.get_json()
+
     api_key = request_json['secrets']['api_key']
 
     url = "{0}?location={1}&categories={2}".format(root_url, location, type)
@@ -50,13 +46,10 @@ def handler(request):
     results = response_text['businesses']
 
     business_table = []
-    category_table = []
     bus_cat_join_table = []
 
     for result in results:
         result.pop("transactions", None)
-
-        categories = result.pop("categories", None)
 
         # UN-NEST SOME OF THE KEYS
         location = result.pop("location", None)
@@ -65,11 +58,14 @@ def handler(request):
         coordinates = result.pop("coordinates", None)
         result.update(coordinates)
 
+        result.pop("display_address", None)
+
         # BUILD LISTS FOR EACH TABLE
         business_table.append(result)
 
+        categories = result.pop("categories", None)
+
         for category in categories:
-            category_table.append(category)
 
             bus_cat = category.copy()
             bus_cat['id'] = result['id']
@@ -80,7 +76,6 @@ def handler(request):
     state = business_table[-1]['id']
     insert = {
             "businesses": business_table,
-            "categories": category_table,
             "business_category": bus_cat_join_table
         }
 
