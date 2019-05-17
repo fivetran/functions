@@ -51,8 +51,6 @@ def handler(request):
     for result in results:
         result.pop("transactions", None)
 
-        categories = result.pop("categories", None)
-
         # UN-NEST SOME OF THE KEYS
         location = result.pop("location", None)
         result.update(location)
@@ -64,6 +62,8 @@ def handler(request):
 
         # BUILD LISTS FOR EACH TABLE
         business_table.append(result)
+
+        categories = result.pop("categories", None)
 
         for category in categories:
 
