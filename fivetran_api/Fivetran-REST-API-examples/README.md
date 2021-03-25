@@ -52,3 +52,20 @@ Reference: https://fivetran.com/docs/rest-api/groups
 Returns a list of all users within your Fivetran account.
 
 Reference: https://fivetran.com/docs/rest-api/users#listallusers
+
+### syncConnector
+
+Triggers a connector sync. Can be used to setup custom sync frequencies.
+
+Reference: https://fivetran.com/docs/rest-api/connectors#syncconnectordata
+
+#### Usage: 
+This example assumes a Linux environment and python3. It can be adjusted accordingly. The following should be added to a given users `crontab` with `crontab -e`.
+
+```sh
+0 0,4,8,12,16,20 * * * /usr/bin/python3 /path/to/syncConnector.py --api_key <key> --api_secret <secret> --connector_id <id> >> ~/cron.log 2>&1
+```
+
+This will sync a given connector (based on connector id from the UI) at the hours of 0, 4, 8, 12, 16, and 20. You can use https://crontab.guru for help with cron syntax for other custom schedules.
+
+It uses python3 located in the `/usr/bin` folder. You then specify the path to the `syncConnector.py` file, and provide the required arguments. It will log results to the `~/cron.log` location. The `2>&1` is a redirect for `stdout` and `stderr` to the log file, so any errors and success are tracked as the script executes.
