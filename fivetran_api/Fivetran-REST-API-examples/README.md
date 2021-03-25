@@ -60,7 +60,7 @@ Triggers a connector sync. Can be used to setup custom sync frequencies.
 Reference: https://fivetran.com/docs/rest-api/connectors#syncconnectordata
 
 #### Usage: 
-This example assumes a Linux environment and python3. It can be adjusted accordingly.
+This example assumes a Linux environment and python3. It can be adjusted accordingly. The following should be added to a given users `crontab` with `crontab -e`.
 
 ```sh
 0 0,4,8,12,16,20 * * * /usr/bin/python3 /path/to/syncConnector.py --api_key <key> --api_secret <secret> --connector_id <id> >> ~/cron.log 2>&1
