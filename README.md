@@ -2,11 +2,9 @@
 
 [Fivetran](https://fivetran.com/) helps you centralize data from disparate sources into your data storage platform that you can manage directly from your browser. Fivetran’s fully automated connectors extract your data from cloud applications, databases, event logs, and more, and load it into your preferred data storage platform.
 
-
 ## Getting Started
 
 [Create you Fivetran account](https://fivetran.com/signup?email=) and get started.
-
 
 ## Cloud Function Connectors
 
@@ -34,13 +32,11 @@ The GitHub repo contains sample functions you can use to build your own cloud fu
 
 See an overview of how these functions work and a [live demo of the Twitter function](https://www.youtube.com/watch?v=HrOdDKOPqhg).
 
-
 ## Support and Documentation 
 
 Contact [our support team](https://support.fivetran.com/hc/en-us) if you need assitance.
 
 Read more about Fivetran in [our documentation](https://fivetran.com/docs/getting-started).
-
 
 ## License
 
