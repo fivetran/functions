@@ -34,11 +34,11 @@ This GitHub repository contains sample functions you can use to build your own c
 
 ## Resources
 
-Contact [our support team](https://support.fivetran.com/hc/en-us) for assistance and information. 
-
 Learn more about Fivetran in [our documentation](https://fivetran.com/docs/getting-started).
 
 Check out [Fivetran's blog](https://fivetran.com/blog).
+
+Contact [our support team](https://support.fivetran.com/hc/en-us) for assistance and information. 
 
 ## License
 
