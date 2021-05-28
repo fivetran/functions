@@ -18,7 +18,9 @@ Fivetran supports the following cloud functions platforms:
  - [Azure Functions](https://azure.microsoft.com/Functions/Serverless)
  - [Google Cloud Functions](https://cloud.google.com/functions/) 
 
-## Technologies
+## Languages
+
+The sample functions in this repository have been written in the following software languages:
 
 - Node.js
 - Python
