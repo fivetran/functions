@@ -4,7 +4,7 @@
 
 ## Fivetran Cloud Function Connectors
 
-[Function connectors](https://fivetran.com/docs/functions) allows you to code a custom data connector as an extension of Fivetran. If you have a custom data source or a private API, use our Function connectors to build robust serverless ELT data pipelines. You only have to write the cloud function to extract the data from your source, Fivetran will load and transform the data in your destination. 
+[Function connectors](https://fivetran.com/docs/functions) allow you to code a custom data connector as an extension of Fivetran. If you have a custom data source or a private API, use our Function connectors to build robust serverless ELT data pipelines. You only have to write the cloud function to extract the data from your source. Fivetran will load and transform the data in your destination. 
 
 ## Get Started
 
