@@ -52,6 +52,3 @@ Contact [our support team](https://support.fivetran.com/hc/en-us) for assistance
 
 See [Fivetran's license](https://github.com/fivetran/functions/blob/master/LICENSE).
 
-## Contribution
-
-Additional contributions to this repository are very welcome! Please create issues or open PRs against master.
