@@ -2,7 +2,7 @@
 
 [Fivetran](https://fivetran.com/) helps you centralize data from disparate sources into your data storage platform that you can manage directly from your browser. Fivetran’s fully automated connectors extract your data from cloud applications, databases, event logs, and more, and load the data into your cloud warehouse, database, or data lake.
 
-## Cloud Function Connectors
+## Fivetran Cloud Function Connectors
 
 [Function connectors](https://fivetran.com/docs/functions) allows you to code a custom data connector as an extension of Fivetran. If you have a custom data source or a private API, use our Function connectors to build robust serverless ELT data pipelines. You only have to write the cloud function to extract the data from your source, Fivetran will load and transform the data in your destination. 
 
