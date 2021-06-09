@@ -15,7 +15,7 @@
 Fivetran supports the following cloud functions platforms:
 
  - [AWS Lambda](https://aws.amazon.com/lambda/)
- - [Azure Functions](https://azure.microsoft.com/Functions/Serverless)
+ - [Azure Functions](https://azure.microsoft.com/en-us/services/functions/)
  - [Google Cloud Functions](https://cloud.google.com/functions/) 
 
 ## Languages
