@@ -1,0 +1,9 @@
+This lambda_function is a simple / minimal example of how to integrate with the monday.com graphQL API to get back a table of boards. 
+
+It can be used by following the fivetran setup guide for google cloud functions.  Don't forget to add the accompanying requirements.txt and select a Python 3.x runtime. Python 3.8 was used to create this function.
+
+This is the structure of the data that accompanies this function in the fivetran connections "secrets" field:
+{
+    "apiKey": "your monday.com api key here",
+    "limit": 1000
+}
