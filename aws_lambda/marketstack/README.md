@@ -9,4 +9,4 @@
 
 5. Endpoint: http://api.marketstack.com/v1/tickers fetches the tickers(stocks).
 
-6. Endpoint: http://api.marketstack.com/v1/eod/latest fetches the prices of the tickers(stocks).
+6. Endpoint: http://api.marketstack.com/v1/eod fetches the prices of the tickers(stocks) between start date and end date.
