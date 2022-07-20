@@ -3,3 +3,4 @@
 .project/**/
 .ijwb/
 *.iml
+.DS_Store
