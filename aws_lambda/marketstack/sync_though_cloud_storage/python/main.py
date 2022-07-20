@@ -18,7 +18,10 @@ def lambda_handler(request, context):
         state["ticker_end_cursor"]=str(date.today())
 
     # Fetch records using api calls
-    (insert, delete, state, hasMore) = api_response(state, request['secrets'])
+    (insert, delete, state, hasMore,error) = api_response(state, request['secrets'])
+
+    if(error):
+        return {"errorMessage": error}
 
     # Mention schema
     tickersSchema = {}
@@ -58,10 +61,12 @@ def api_response(state, secrets):
     ticker_start_cursor=state["ticker_start_cursor"]
     ticker_end_cursor=state["ticker_end_cursor"]
 
-    # Fetch all the tickers
-    insert_tickers = get_tickers(secrets['apiKey'],ticker_offset)
+    state,insert,delete,hasMore,error = {},{},{},False,None
 
-    state,insert,delete,hasMore = {},{},{},False
+    # Fetch all the tickers
+    insert_tickers,error = get_tickers(secrets['apiKey'],ticker_offset)
+    if(error):
+        return (None,None,None,None,error)
 
     # Stop when no more ticker is left
     if(not insert_tickers):
@@ -77,7 +82,9 @@ def api_response(state, secrets):
     # Fetch the records of prices. If time exceeds 5s then return intermediate response and fetch other records in subsequent calls
     start_time=time.time()
     for ticker in insert_tickers:
-        temp_list=get_ticker_price(secrets['apiKey'],ticker['symbol'],ticker_start_cursor,ticker_end_cursor)
+        temp_list,error=get_ticker_price(secrets['apiKey'],ticker['symbol'],ticker_start_cursor,ticker_end_cursor)
+        if(error):
+            return (None,None,None,None,error)
         ticker_offset+=1
         if(temp_list):
             insert_ticker_price+=temp_list
@@ -96,7 +103,7 @@ def api_response(state, secrets):
     insert['tickers_price'] = insert_ticker_price
     delete['tickers_price'] = []
 
-    return (insert, delete, state, hasMore)
+    return (insert, delete, state, hasMore,None)
 
 
 # This function will list all the tickers presently available
@@ -109,10 +116,13 @@ def get_tickers(api_key,ticker_offset):
     'offset': ticker_offset,
     'limit': 1000
     }
-    api_result = requests.get('http://api.marketstack.com/v1/tickers', params)
-    api_response = api_result.json()
-    insert_ticker_records=api_response["data"]
-    return insert_ticker_records
+    try:
+        api_result = requests.get('http://api.marketstack.com/v1/tickers', params)
+        api_response = api_result.json()
+        insert_ticker_records=api_response["data"]
+    except:
+        None,api_response
+    return insert_ticker_records,None
 
 
 # This function will fetch the prices of a particular ticker from start date to end date
@@ -134,15 +144,18 @@ def get_ticker_price(api_key,symbols,ticker_start_cursor,ticker_end_cursor):
         'date_from':ticker_start_cursor,
         'date_to':ticker_end_cursor
         }
-        api_result = requests.get('http://api.marketstack.com/v1/eod', params)
-        api_response = api_result.json()
-        insert_ticker_price_records_temp=api_response["data"]
-        if(insert_ticker_price_records_temp):
-            insert_ticker_price_records+=insert_ticker_price_records_temp
-            ticker_price_offset+=1000
-        else:
-            break
-    return insert_ticker_price_records
+        try:
+            api_result = requests.get('http://api.marketstack.com/v1/eod', params)
+            api_response = api_result.json()
+            insert_ticker_price_records_temp=api_response["data"]
+            if(insert_ticker_price_records_temp):
+                insert_ticker_price_records+=insert_ticker_price_records_temp
+                ticker_price_offset+=1000
+            else:
+                break
+        except:
+            return None,api_response
+    return insert_ticker_price_records,None
 
 # Function to store data in S3 bucket
 def push_data_s3(request, json_str):
