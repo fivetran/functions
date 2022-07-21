@@ -38,7 +38,7 @@ def lambda_handler(request, context):
 
     except Exception as e:
         # Return error response
-        return {"errorMessage": e,
+        return {"errorMessage": str(e),
                 "stackTrace": traceback.format_exc()}
 
 
@@ -52,7 +52,7 @@ def api_response(state, secrets):
     insert_tickers = get_tickers(secrets['apiKey'], ticker_offset)
 
     # Fetch the records of prices of tickers.
-    # If time exceeds 5s then return intermediate response and fetch other records in subsequent calls
+    # If time exceeds 1s then return intermediate response and fetch other records in subsequent calls
     # After price for a ticker is fetched we increment ticker offset by 1
     insert_ticker_price = []
     insert_ticker_actual = []
@@ -65,7 +65,7 @@ def api_response(state, secrets):
             insert_ticker_price += temp_list
             insert_ticker_actual.append(ticker)
         end_time = time.time()
-        if(end_time-start_time > 5):
+        if(end_time-start_time > 1):
             break
 
     state, insert, delete, hasMore = {}, {}, {}, False
@@ -178,7 +178,7 @@ def get_response(state, hasMore):
     # Add updated state to response
     response['state'] = state
     # Add schema defintion in response
-    response['schema'] = get_schema
+    response['schema'] = get_schema()
     # Add hasMore flag
     response['hasMore'] = hasMore
     return response
