@@ -1,0 +1,9 @@
+## go executables
+**/main
+!**/main
+
+## java executabels
+**/target/
+
+*.zip
+**/*.zip

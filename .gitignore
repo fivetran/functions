@@ -1,0 +1,10 @@
+# intellij files
+**/.idea
+**/.ijwb
+
+# vscode files
+**/.DS_Store
+.DS_Store
+
+.project/**/
+*.iml
