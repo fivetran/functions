@@ -21,7 +21,7 @@ def lambda_handler(request, context):
     # Add all the records to be inserted in response
     response['schema'] = schema
     # Add hasMore flag
-    response['hasMore'] = 'false'
+    response['hasMore'] = False
 
     response_s3={}
     # Add all the records to be inserted in response_s3
@@ -46,7 +46,8 @@ def api_response(state, secrets):
             {"date":'2017-12-31T05:12:05Z', "order_id":1000, "amount":'$1200', "discount":'$12'},
             {"date":'2017-12-31T06:12:04Z', "order_id":1000, "amount":'$1200', "discount":'$12'},
     ]
-    return (insertTransactions, deleteTransactions, '2018-01-01T00:00:00Z')
+    newTransactionCursor='2018-01-01T00:00:00Z'
+    return (insertTransactions, deleteTransactions, newTransactionCursor)
 
 #Function to store data in s3
 def push_data_s3(request, json_str):

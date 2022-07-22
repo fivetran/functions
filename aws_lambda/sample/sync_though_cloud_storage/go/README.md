@@ -11,6 +11,7 @@
 - Download the lambda library from GitHub.
     ```bash
     go get github.com/aws/aws-lambda-go/lambda
+    go get github.com/aws/aws-sdk-go/...
     ````
 - Compile your executable.
     ```bash

@@ -23,7 +23,7 @@ def lambda_handler(request, context):
     # Add schema defintion in response
     response['schema'] = schema
     # Add hasMore flag
-    response['hasMore'] = 'false'
+    response['hasMore'] = False
     return response
 def api_response(state, secrets):
     # your api call goes here
@@ -35,4 +35,5 @@ def api_response(state, secrets):
             {"date":'2017-12-31T05:12:05Z', "order_id":1000, "amount":'$1200', "discount":'$12'},
             {"date":'2017-12-31T06:12:04Z', "order_id":1000, "amount":'$1200', "discount":'$12'},
     ]
-    return (insertTransactions, deleteTransactions, '2018-01-01T00:00:00Z')
+    newTransactionCursor='2018-01-01T00:00:00Z'
+    return (insertTransactions, deleteTransactions, newTransactionCursor)
