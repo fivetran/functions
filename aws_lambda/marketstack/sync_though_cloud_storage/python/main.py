@@ -70,8 +70,12 @@ def api_response(state, secrets):
 
     state, insert, delete, hasMore = {}, {}, {}, False
 
-    # Stop when no more ticker is left.
-    # Set ticker_offset back to 0
+    # If insert_tickers is empty then all tickers are processed
+    #   Set ticker_offset back to 0 for again syncing from start in next sync
+    #   Set ticker_start_cursor to ticker_end_cursor
+    #   Set ticker_end_cursor to Today's date
+    # Else
+    #   Set hasMore = True to again run lambda function with updated cursor value
     if(not insert_tickers):
         ticker_offset = 0
         ticker_start_cursor = ticker_end_cursor
