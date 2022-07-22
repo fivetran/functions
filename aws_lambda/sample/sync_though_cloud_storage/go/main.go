@@ -79,7 +79,7 @@ func generateJson(insert map[string][]Record, delete map[string][]Record) []byte
 func uploadToS3(bucket string, file string, json []byte) {
 	// create session and uploader
 	s3Config := &aws.Config{
-		//We need to specify the bucket region here if bucket is not global & `lambda` in not the same region as s3 bucket
+		//we need to specify the bucket region here if bucket is not global & `lambda` in not the same region as s3 bucket
 		Region:      aws.String(os.Getenv("AWS_REGION")), 
 	}
 	s3Session := session.New(s3Config)

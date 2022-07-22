@@ -1,6 +1,10 @@
-# Config
-.idea/
-.project/**/
-.ijwb/
-*.iml
+# intellij files
+**/.idea
+**/.ijwb
+
+# vscode files
+**/.DS_Store
 .DS_Store
+
+.project/**/
+*.iml

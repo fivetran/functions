@@ -1,15 +1,9 @@
 ## go executables
 **/main
+!**/main
 
 ## java executabels
 **/target/
-
-# vscode files
-**/.DS_Store
-.DS_Store
-
-# intellij files
-**/.idea
 
 *.zip
 **/*.zip
