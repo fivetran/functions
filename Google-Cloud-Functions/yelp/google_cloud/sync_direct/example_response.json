@@ -1,0 +1,65 @@
+{
+  "insert": {
+    "business_category": [
+      {
+        "alias": "nonprofit",
+        "id": "8nVI-kU5JlAP4EIzIVtwlQ"
+      },
+      {
+        "alias": "makerspaces",
+        "id": "8nVI-kU5JlAP4EIzIVtwlQ"
+      }
+    ],
+    "businesses": [
+      {
+        "rating": 4.5,
+        "city": "San Francisco",
+        "address1": "2169 Mission St",
+        "address2": "",
+        "address3": "",
+        "phone": "",
+        "display_phone": "",
+        "id": "8nVI-kU5JlAP4EIzIVtwlQ",
+        "is_closed": false,
+        "distance": 1525.9308928508,
+        "review_count": 32,
+        "name": "Noisebridge",
+        "url": "https:\/\/www.yelp.com\/biz\/noisebridge-san-francisco?adjust_creative=x8TUK-FIcJqcb_Q262-Stw&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=x8TUK-FIcJqcb_Q262-Stw",
+        "country": "US",
+        "longitude": -122.41905,
+        "alias": "noisebridge-san-francisco",
+        "state": "CA",
+        "image_url": "https:\/\/s3-media1.fl.yelpcdn.com\/bphoto\/RBhhlYAl4cVcMc-upiBcZA\/o.jpg",
+        "latitude": 37.76238,
+        "zip_code": "94110"
+      }
+    ],
+    "categories": [
+      {
+        "alias": "nonprofit",
+        "title": "Community Service\/Non-Profit"
+      },
+      {
+        "alias": "makerspaces",
+        "title": "Makerspaces"
+      }
+    ]
+  },
+  "state": "8nVI-kU5JlAP4EIzIVtwlQ",
+  "hasMore": false,
+  "schema": {
+    "business_category": {
+
+    },
+    "businesses": {
+      "primary_key": [
+        "id"
+      ]
+    },
+    "categories": {
+      "primary_key": [
+        "alias"
+      ]
+    }
+  }
+}

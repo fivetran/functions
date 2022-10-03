@@ -1,0 +1,34 @@
+{
+    "state": {
+        "since_id": 1004056816274190300
+    },
+    "schema": {
+        "tweets": {
+            "primary_key": [
+                "id"
+            ]
+        },
+        "users": {
+            "primary_key": [
+                "id"
+            ]
+        }
+    },
+    "insert": {
+        "tweets": [
+            {
+                "id": 1004056816274190300,
+                "user_id": 27260086,
+                "text": "#cupidmovie https://t.co/11sV1zrpYa"
+            }
+        ],
+        "users": [
+            {
+                "id": 27260086,
+                "name": "Justin Bieber",
+                "screen_name": "justinbieber"
+            }
+        ]
+    },
+    "hasMore": false
+}
