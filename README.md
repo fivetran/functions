@@ -22,19 +22,10 @@ Fivetran supports the following cloud functions platforms:
 
 The sample functions in this repository have been written in the following software languages:
 
+- Go
+- Java
 - Node.js
 - Python
-- Java
-
-## Sample Functions
-
-This GitHub repository contains sample functions you can use to build your own cloud functions. We have included sample functions to fetch data from the following data sources:
-
-- [Elastic search server](https://github.com/fivetran/functions/tree/master/elastic_search)
-- [Databases](https://github.com/fivetran/functions/tree/master/database)
-- [APIs](https://github.com/fivetran/functions/tree/master/api/)
-- [Files (such as CSV, TSV, and JSON)](https://github.com/fivetran/functions/tree/master/file)
-- [London Tube (Transport API)](https://github.com/fivetran/functions/tree/master/LondonSubway)
 
 ## Demo
 
