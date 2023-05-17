@@ -1,5 +1,6 @@
 import json
 import boto3
+import random
 def lambda_handler(request, context):
     # Fetch records using api calls
     (insertTransactions, deleteTransactions,softDelete,newTransactionCursor) = api_response(request['state'], request['secrets'])
@@ -34,9 +35,12 @@ def lambda_handler(request, context):
 def api_response(state, secrets):
     # your api call goes here
     insertTransactions = [
-            {"date":'2017-12-31T06:12:04Z', "order_id":12, "amount":'$1200', "discount":'$13'},
-            {"date":'2017-12-31T06:12:04Z', "order_id":13, "amount":'$1200', "discount":'$13'}
+            {"date":'2017-12-31T06:12:04Z', "amount":'$1200', "discount":'$13'},
+            {"date":'2017-12-31T06:12:04Z', "amount":'$1200', "discount":'$13'}
     ]
+    #adding random order_id(primary key) to each records to make each record unique, so that we can test softDelete functionality
+    for each in insertTransactions:
+        each["order_id"]=random.randrange(100)
     deleteTransactions = [
 
     ]
